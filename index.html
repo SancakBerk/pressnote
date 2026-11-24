@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pressnote: Heart Rate Monitor & Blood Pressure Log</title>
+<meta name="description" content="Pressnote measures your pulse with your fingertip and keeps your blood pressure log. Scan your monitor, follow a 7-day plan and share a PDF with your doctor.">
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="alternate" hreflang="en" href="https://pressnote.approds.com/"><link rel="alternate" hreflang="tr" href="https://pressnote.approds.com/tr/">
+<style>@font-face{font-family:"IBM Plex Mono";font-weight:400;font-display:swap;src:url("assets/plexmono-400.woff") format("woff")}@font-face{font-family:"IBM Plex Mono";font-weight:600;font-display:swap;src:url("assets/plexmono-600.woff") format("woff")}
+:root{--bg:#F6F4EF;--surface:#FFFFFF;--surface2:#EDE9E1;--text:#1A1D23;--text2:#50555F;--text3:#626772;--line:#DCD6CB;--rule:#E6E0D4;
+--accent:#D12E45;--press:#A81F33;--accent-soft:#FBE4E7;--accent-text:#B8233A;--on-accent:#FFFFFF;
+--hero-top:#F2545F;--hero-mid:#D9364A;--hero-bottom:#C21D36;--good:#17734A;
+--normal:#1B7A47;--normal-bg:#DDF0E4;--elevated:#8A6100;--elevated-bg:#F8EDC8;--stage1:#B4530F;--stage1-bg:#FBE4D2;--stage2:#B3261E;--stage2-bg:#F8DCDA;
+--band:#1A1D23;--band-card:#262A32;--band-text:#EEF0F3;--band-text2:#B3B8C2;
+--sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+--mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121418;--surface:#1B1E24;--surface2:#262A32;--text:#EEF0F3;--text2:#B3B8C2;--text3:#969CA8;--line:#333842;--rule:#2A2E36;
+--accent:#FF7A88;--press:#C24A58;--accent-soft:#3A1C22;--accent-text:#FF98A3;--on-accent:#1A0B0E;--good:#5BC98F;
+--normal:#6FD69B;--normal-bg:#173326;--elevated:#F0C64E;--elevated-bg:#3A3115;--stage1:#FFA766;--stage1-bg:#3D2616;--stage2:#FF8A80;--stage2-bg:#41201E;
+--band:#0B0C0E;--band-card:#1B1E24;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121418;--surface:#1B1E24;--surface2:#262A32;--text:#EEF0F3;--text2:#B3B8C2;--text3:#969CA8;--line:#333842;--rule:#2A2E36;
+--accent:#FF7A88;--press:#C24A58;--accent-soft:#3A1C22;--accent-text:#FF98A3;--on-accent:#1A0B0E;--good:#5BC98F;
+--normal:#6FD69B;--normal-bg:#173326;--elevated:#F0C64E;--elevated-bg:#3A3115;--stage1:#FFA766;--stage1-bg:#3D2616;--stage2:#FF8A80;--stage2-bg:#41201E;
+--band:#0B0C0E;--band-card:#1B1E24;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.0625rem/1.55 var(--sans)}
+a{color:var(--accent-text);font-weight:600}
+a:focus-visible,select:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+h1,h2,h3{text-wrap:balance}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem;color:var(--text);text-decoration:none;letter-spacing:-.01em}
+.brand img{width:34px;height:34px;border-radius:9px}
+.lang select{appearance:none;-webkit-appearance:none;border:0;background:var(--surface2);color:var(--text);font:600 .875rem var(--sans);padding:8px 30px 8px 12px;border-radius:12px;cursor:pointer;
+background-image:linear-gradient(45deg,transparent 50%,var(--text2) 50%),linear-gradient(135deg,var(--text2) 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:center;padding-block:28px 64px}
+.hero h1{font-size:clamp(2.25rem,5.6vw,3.625rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin:0 0 18px}
+.hero .lead{font-size:1.1875rem;color:var(--text2);margin:0 0 26px;max-width:32em}
+.eyebrow{font-weight:700;color:var(--accent-text);margin:0 0 10px}
+.store{display:inline-block;background:var(--accent);color:var(--on-accent);padding:12px 24px 13px;border-radius:16px;font-weight:800;font-size:1.125rem;line-height:1.2;text-decoration:none;box-shadow:0 4px 0 var(--press)}
+.store small{display:block;font-weight:600;font-size:.8125rem;opacity:.9}
+.scene{justify-self:center;width:min(380px,100%);display:grid;gap:14px}
+.pulse{background:linear-gradient(160deg,var(--hero-top),var(--hero-mid) 55%,var(--hero-bottom));color:#fff;border-radius:26px;padding:20px 22px 16px;box-shadow:0 16px 34px rgba(194,29,54,.28)}
+.pulse .lbl{font-weight:700;font-size:.875rem;opacity:.85;margin:0}
+.pulse .bpm{display:flex;align-items:baseline;gap:8px;margin:2px 0 0}
+.pulse .bpm b{font-family:var(--mono);font-weight:600;font-size:4rem;line-height:1;letter-spacing:-.04em}
+.pulse .bpm span{font-weight:700;opacity:.9}
+.pulse svg{display:block;width:100%;height:64px;margin:10px 0 8px}
+.pulse svg path{fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.pulse .facts{display:flex;flex-wrap:wrap;gap:6px 14px;font-weight:600;font-size:.875rem;opacity:.92}
+.reading{background:var(--surface);border-radius:22px;padding:16px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;box-shadow:0 10px 26px rgba(26,29,35,.10)}
+.reading .when{color:var(--text2);font-weight:600;font-size:.875rem}
+.reading .val{font-family:var(--mono);font-weight:600;font-size:2rem;line-height:1.1;letter-spacing:-.03em}
+.reading .val small{font-family:var(--sans);font-size:.875rem;font-weight:600;color:var(--text2);letter-spacing:0;margin-left:6px}
+.reading .sub{grid-column:1/-1;color:var(--text2);font-size:.875rem}
+.chip{display:inline-block;font-weight:700;font-size:.8125rem;line-height:1;padding:6px 9px;border-radius:999px;white-space:nowrap}
+.c-normal{color:var(--normal);background:var(--normal-bg)}.c-elevated{color:var(--elevated);background:var(--elevated-bg)}
+.c-stage1{color:var(--stage1);background:var(--stage1-bg)}.c-stage2,.c-severe{color:var(--stage2);background:var(--stage2-bg)}
+.band{background:var(--band);color:var(--band-text)}
+.band .wrap{padding-block:56px 52px}
+.band h2{font-size:clamp(1.75rem,4.4vw,2.5rem);font-weight:800;line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}
+.band .sub{color:var(--band-text2);font-size:1.125rem;margin:0 0 28px;max-width:38em}
+.log{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+.sheet{background:#FBFAF6;color:#1A1D23;border-radius:18px;padding:18px 18px 10px;min-width:0;
+background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 39px,#E6E0D4 39px,#E6E0D4 40px);background-position:0 56px}
+.sheet .tablewrap{margin:0}
+.sheet table{min-width:280px}.sheet td:last-child,.sheet th:last-child{padding-right:0;text-align:end}
+.sheet th{color:#50555F;border-bottom:1px solid #DCD6CB;font-size:.8125rem;padding:6px 10px 10px 0}
+.sheet td{border:0;padding:0 10px 0 0;height:40px;vertical-align:middle;font-family:var(--mono);font-size:.9375rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sheet td:first-child{font-family:var(--sans);font-weight:600;color:#50555F}
+.sheet .sess{display:inline-flex;align-items:center;gap:6px}
+.sheet .sess i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.avg{display:grid;gap:12px;min-width:0}
+.avg .card{background:var(--band-card);border-radius:18px;padding:16px 18px;display:grid;gap:6px}
+.avg .k{color:var(--band-text2);font-weight:600;font-size:.875rem}
+.avg .v{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.avg .v b{font-family:var(--mono);font-weight:600;font-size:1.75rem;letter-spacing:-.03em}
+.avg .v b small{font-family:var(--sans);font-size:.8125rem;font-weight:600;color:var(--band-text2);letter-spacing:0;margin-left:5px}
+.pdf{display:flex;align-items:center;gap:12px;background:var(--band-card);border-radius:18px;padding:14px 18px;font-weight:700}
+.pdf svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.band .aside{color:var(--band-text2);margin:24px 0 0;font-size:.9375rem}
+section.block{padding-block:56px 0}
+section.block h2{font-size:clamp(1.625rem,4vw,2.25rem);font-weight:800;line-height:1.12;letter-spacing:-.02em;margin:0 0 26px}
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 26px}
+.feat{min-width:0}
+.tile{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;margin-bottom:12px;background:var(--accent-soft);color:var(--accent-text)}
+.tile svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.feat h3{font-size:1.125rem;font-weight:700;line-height:1.25;margin:0 0 4px}
+.feat p{margin:0;color:var(--text2);font-size:1rem}
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.plan{border-radius:22px;padding:22px 24px;background:var(--surface);min-width:0}
+.plan.pro{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.plan h3{font-size:1.25rem;font-weight:800;margin:0 0 10px}
+.ticks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ticks li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start}
+.ticks svg{width:22px;height:22px;margin-top:2px;fill:none;stroke:var(--good);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.plan.pro .ticks svg{stroke:var(--accent)}
+.after{color:var(--text2);margin:16px 0 0}
+.promise{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.promise div{background:var(--surface);border-radius:18px;padding:16px 18px;min-width:0;font-weight:600;line-height:1.35}
+.promise svg{display:block;width:26px;height:26px;margin-bottom:10px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+details{background:var(--surface);border-radius:16px;padding:14px 18px}
+details+details{margin-top:10px}
+summary{cursor:pointer;font-weight:700}
+details p{margin:8px 0 0;color:var(--text2)}
+.doc{max-width:760px;padding-block:20px 48px}
+.doc h1{font-size:clamp(1.875rem,4.4vw,2.5rem);font-weight:800;line-height:1.12;margin:0 0 6px;letter-spacing:-.02em}
+.doc .meta{color:var(--text2);font-size:.875rem;margin:0 0 24px}
+.doc h2{font-size:1.1875rem;font-weight:700;margin:28px 0 6px}
+.doc p{margin:0 0 10px}
+.doc ul{margin:0 0 10px;padding-left:1.25em}
+.contact{background:var(--surface);border-radius:18px;padding:18px;margin:16px 0}
+.contact a{font-size:1.0625rem;overflow-wrap:anywhere}
+.tablewrap{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:start;padding:10px 12px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:700;font-size:.875rem;color:var(--text2)}
+footer{margin-top:64px;border-top:1px solid var(--line);padding-block:24px 40px;color:var(--text2);font-size:.875rem}
+footer nav{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:10px}
+@media (max-width:860px){.feats{grid-template-columns:repeat(2,minmax(0,1fr))}.log{grid-template-columns:minmax(0,1fr)}.promise{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.hero{grid-template-columns:minmax(0,1fr);padding-block:8px 44px}.scene{order:-1;width:min(360px,100%)}
+.feats,.plans{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:no-preference){.pulse svg path{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 2.4s linear .2s forwards}
+.reading{animation:rise .4s ease-out 1s both}
+@keyframes draw{to{stroke-dashoffset:0}}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<header class="top wrap"><a class="brand" href="index.html"><img src="assets/icon.png" alt="" width="34" height="34">Pressnote</a><label class="lang"><select id="lang" aria-label="Language"><option lang="en" value="index.html" selected>English</option><option lang="tr" value="tr/index.html">Türkçe</option></select></label></header><main>
+<div class="wrap">
+<section class="hero">
+<div>
+<p class="eyebrow">Heart rate and blood pressure for iPhone</p>
+<h1>Your pulse from a fingertip. Your blood pressure in one log.</h1>
+<p class="lead">Rest your finger on the camera for 30 seconds to see your pulse, HRV and stress. Point the camera at your monitor and the reading is saved. After seven days you have a PDF your doctor can read in a minute.</p>
+<span class="store">Coming soon<small>on the App Store for iPhone</small></span>
+</div>
+<div class="scene" aria-hidden="true"><div class="pulse"><p class="lbl">Finger pulse · 30 seconds</p><p class="bpm"><b>72</b><span>bpm</span></p><svg viewBox="0 0 340 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 58.0 L2 57.6 L4 55.6 L6 48.5 L8 32.8 L10 14.3 L12 8.4 L14 20.9 L16 39.1 L18 49.6 L20 50.5 L22 46.3 L24 41.3 L26 39.0 L28 40.9 L30 45.9 L32 51.2 L34 55.0 L36 57.0 L38 57.7 L40 57.9 L42 58.0 L44 58.0 L46 58.0 L48 58.0 L50 58.0 L52 58.0 L54 58.0 L56 58.0 L58 58.0 L60 57.6 L62 55.6 L64 48.5 L66 32.8 L68 14.3 L70 8.4 L72 20.9 L74 39.1 L76 49.6 L78 50.5 L80 46.3 L82 41.3 L84 39.0 L86 40.9 L88 45.9 L90 51.2 L92 55.0 L94 57.0 L96 57.7 L98 57.9 L100 58.0 L102 58.0 L104 58.0 L106 58.0 L108 58.0 L110 58.0 L112 58.0 L114 58.0 L116 58.0 L118 57.6 L120 55.6 L122 48.5 L124 32.8 L126 14.3 L128 8.4 L130 20.9 L132 39.1 L134 49.6 L136 50.5 L138 46.3 L140 41.3 L142 39.0 L144 40.9 L146 45.9 L148 51.2 L150 55.0 L152 57.0 L154 57.7 L156 57.9 L158 58.0 L160 58.0 L162 58.0 L164 58.0 L166 58.0 L168 58.0 L170 58.0 L172 58.0 L174 58.0 L176 57.6 L178 55.6 L180 48.5 L182 32.8 L184 14.3 L186 8.4 L188 20.9 L190 39.1 L192 49.6 L194 50.5 L196 46.3 L198 41.3 L200 39.0 L202 40.9 L204 45.9 L206 51.2 L208 55.0 L210 57.0 L212 57.7 L214 57.9 L216 58.0 L218 58.0 L220 58.0 L222 58.0 L224 58.0 L226 58.0 L228 58.0 L230 58.0 L232 58.0 L234 57.6 L236 55.6 L238 48.5 L240 32.8 L242 14.3 L244 8.4 L246 20.9 L248 39.1 L250 49.6 L252 50.5 L254 46.3 L256 41.3 L258 39.0 L260 40.9 L262 45.9 L264 51.2 L266 55.0 L268 57.0 L270 57.7 L272 57.9 L274 58.0 L276 58.0 L278 58.0 L280 58.0 L282 58.0 L284 58.0 L286 58.0 L288 58.0 L290 58.0 L292 57.6 L294 55.6 L296 48.5 L298 32.8 L300 14.3 L302 8.4 L304 20.9 L306 39.1 L308 49.6 L310 50.5 L312 46.3 L314 41.3 L316 39.0 L318 40.9 L320 45.9 L322 51.2 L324 55.0 L326 57.0 L328 57.7 L330 57.9 L332 58.0 L334 58.0 L336 58.0 L338 58.0 L340 58.0"/></svg><div class="facts"><span>Resting range</span><span>HRV 46 ms</span><span>Calm</span></div></div><div class="reading"><span class="when">Morning · 7:40 · left arm</span><span class="chip c-stage1">Stage 1</span><span class="val">128/82<small>mmHg</small></span><span></span><span class="sub">Pulse 64 · read from the monitor's display</span></div></div>
+</section>
+</div>
+<section class="band" aria-labelledby="w-h"><div class="wrap">
+<h2 id="w-h">A week of readings your doctor can read</h2>
+<p class="sub">Doctors often ask for a week of home readings: two in the morning before breakfast and medicine, two in the evening. Pressnote reminds you, counts the days and turns the week into one PDF.</p>
+<div class="log"><div class="sheet"><div class="tablewrap"><table aria-label="Seven days of morning and evening readings in mmHg, with pulse"><thead><tr><th>Day</th><th><span class="sess"><i style="background:#F2B33D"></i>Morning</span></th><th><span class="sess"><i style="background:#6C7BD9"></i>Evening</span></th><th>Pulse</th></tr></thead><tbody><tr><td>Mon</td><td>132/85</td><td>124/79</td><td>66</td></tr><tr><td>Tue</td><td>128/83</td><td>121/77</td><td>70</td></tr><tr><td>Wed</td><td>135/86</td><td>126/80</td><td>68</td></tr><tr><td>Thu</td><td>130/84</td><td>122/78</td><td>64</td></tr><tr><td>Fri</td><td>127/82</td><td>119/76</td><td>71</td></tr><tr><td>Sat</td><td>133/85</td><td>125/79</td><td>67</td></tr><tr><td>Sun</td><td>129/83</td><td>123/78</td><td>69</td></tr></tbody></table></div></div><div class="avg"><div class="card"><span class="k">Morning average</span><div class="v"><b>131/84<small>mmHg</small></b><span class="chip c-stage1">Stage 1</span></div></div><div class="card"><span class="k">Evening average</span><div class="v"><b>123/78<small>mmHg</small></b><span class="chip c-elevated">Elevated</span></div></div><div class="card"><span class="k">Pulse average</span><div class="v"><b>68<small>bpm</small></b></div></div><div class="pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></svg><span>Report for your doctor: averages, chart and every day</span></div></div></div>
+<p class="aside">Stages follow the guideline of your region: AHA/ACC 2025 in the US and most countries, ESH 2023 in Europe and Türkiye, JSH 2019 in Japan. This example uses AHA/ACC.</p>
+</div></section>
+<div class="wrap">
+<section class="block" aria-labelledby="f-h"><h2 id="f-h">What it does</h2><div class="feats"><article class="feat"><div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 3.5 10L15 9l1.5 3H21"/></svg></div><h3>Pulse with your fingertip</h3><p>Cover the back camera and flash with your fingertip for 30 seconds. See your pulse, whether it's in the resting range, your HRV and your stress.</p></article><article class="feat"><div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M8.5 9.5h7M8.5 13h7M8.5 16.5h4"/></svg></div><h3>Scan your monitor</h3><p>Hold the camera to your monitor's display. Pressnote reads the upper and lower numbers and the pulse, and you confirm before it's saved.</p></article><article class="feat"><div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M12 14h2M16 14h.5"/></svg></div><h3>A 7-day plan</h3><p>Morning and evening reminders, the days counted for you, and your week on one chart with morning and evening apart.</p></article><article class="feat"><div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></svg></div><h3>A PDF for your doctor</h3><p>Averages for morning and evening, a chart and a day-by-day table, with your name on it. Share it by mail or message.</p></article><article class="feat"><div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18a8 8 0 0 1 16 0"/><path d="M12 18l4-5"/></svg></div><h3>Stages for your region</h3><p>Every reading shows its stage at a glance, by the guideline doctors use where you live.</p></article><article class="feat"><div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M8 11.5h2l1-2 2 4 1-2h2"/></svg></div><h3>Apple Health and reminders</h3><p>Bring in the readings your monitor's app saves to Apple Health, and save yours there too.</p></article></div></section>
+<section class="block" aria-labelledby="p-h"><h2 id="p-h">Free, and Pro for the full picture</h2>
+<div class="plans"><div class="plan"><h3>Free</h3><ul class="ticks"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Type in as many blood pressure readings as you like</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>3 monitor scans</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Stages and ranges for your region</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>This week's history</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Morning and evening reminders</span></li></ul></div><div class="plan pro"><h3>Pressnote Pro</h3><ul class="ticks"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Finger pulse with HRV and stress</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Unlimited monitor scans</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>The 7-day PDF for your doctor</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Your full history</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Apple Health and CSV export</span></li></ul></div></div>
+<p class="after">Pro is a yearly plan with 3 days free, or a weekly plan. The paywall shows the date the trial ends before you start.</p></section>
+<section class="block" aria-labelledby="r-h"><h2 id="r-h">Your readings are yours</h2><div class="promise"><div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>Your readings stay on your iPhone</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>No account to make</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12" rx="2.5"/><path d="M4.5 19.5l15-15"/></svg>No ads, and no data sold</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10.5" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Apple Health only when you turn it on</div></div></section>
+<section class="block" aria-labelledby="q-h"><h2 id="q-h">Questions</h2><details><summary>How does the finger pulse work?</summary><p>The flash lights up your fingertip and the camera sees the small change in color with every heartbeat. Over 30 seconds Pressnote counts the beats and the time between them, which gives your pulse, your HRV and your stress level.</p></details><details><summary>Which monitors can it read?</summary><p>Monitors with a digital display that shows the upper number, the lower number and the pulse, which is most home monitors. You see what Pressnote read and confirm it before it's saved. You can always type a reading in.</p></details><details><summary>Which ranges does it use?</summary><p>The guideline of your iPhone's region: AHA/ACC 2025 in the US and most countries, ESH 2023 in Europe and Türkiye, JSH 2019 in Japan.</p></details><details><summary>What happens after the free trial?</summary><p>The yearly price is charged on the date shown before you start, unless you cancel at least 24 hours before the trial ends. Cancel in iPhone Settings under your name, then Subscriptions.</p></details><details><summary>Can I move my readings to a new phone?</summary><p>Your readings are part of your iPhone backup. With Pro you can also keep them in Apple Health or export everything as a CSV file.</p></details></section>
+</div>
+</main><footer><div class="wrap"><nav aria-label="Legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a><a href="kvkk.html">KVKK</a><a href="licenses.html">Licenses</a></nav><div>© 2026 Berk Sancak · approds</div></div></footer>
+<script>
+(function(){
+  var s=document.getElementById('lang');
+  if(s)s.addEventListener('change',function(){try{localStorage.setItem('lang',s.options[s.selectedIndex].lang)}catch(e){}location.href=s.value});
+})();
+</script>
+</body>
+</html>
